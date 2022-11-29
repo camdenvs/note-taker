@@ -1,5 +1,5 @@
 const express = require('express')
-const notesRouter = require('./tips')
+const notesRouter = require('./notes')
 
 const app = express()
 
