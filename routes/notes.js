@@ -3,7 +3,17 @@ const { readFromFile, readAndAppend } = require('../helpers/fsUtils')
 const uuid = require('../helpers/uuid')
 
 notes.get('/', (req, res) => {
-    readFromFile('./db/notes.json').then((data) => res.json(JSON.parse(data)))
+    readFromFile('./db/db.json').then((data) => res.json(JSON.parse(data)))
+})
+
+notes.get('/:noteId', (req, res) => {
+    const noteId = req.params.noteId
+    readFromFile('./db/db.json')
+        .then((data) => JSON.parse(data))
+        .then((json) => {
+            const result = json.filter((note) => note.noteId === noteId)
+            return result.length > 0 ? res.json(result) : res.json('No note with that ID')
+        })
 })
 
 notes.post('/', (req, res) => {
@@ -13,10 +23,10 @@ notes.post('/', (req, res) => {
         const newNote = {
             title,
             text,
-            noteId: uuid(),
+            id: uuid(),
         }
 
-        readAndAppend(newNote, '.db/notes.json')
+        readAndAppend(newNote, 'db/db.json')
 
         const response = {
             status: 'success',
